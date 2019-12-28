@@ -26,8 +26,7 @@ public class StreamServer implements Callable<Void> {
 	private static class Downloader {
 		/** time of the last packet send to this downloader */
 		public long t;
-		public byte[] buf;
-		public volatile int buflen;
+		public CircularByteBuffer buf;
 	}
 
 	private HashMap<Socket, Downloader> activeDownloaders = new HashMap<>();
@@ -69,29 +68,29 @@ public class StreamServer implements Callable<Void> {
 	private void download_thread(Socket socket) {
 		try (Socket socket_ = socket) {
 			OutputStream os = socket.getOutputStream();
-			byte[] buf = new byte[Launcher.BUFLEN];
+			CircularByteBuffer buf = new CircularByteBuffer(Launcher.BUFLEN);
+			byte[] bs = new byte[Launcher.BUFLEN];
 
 			// add me to active downloaders
 			Downloader me = new Downloader();
 			me.t = System.currentTimeMillis();
 			me.buf = buf;
-			me.buflen = 0;
 			synchronized (activeDownloaders) {
 				activeDownloaders.put(socket, me);
 			}
 
 			while (true) {
 				// wait for buf
-				if (me.buflen == 0) {
-					Thread.sleep(200);
+				if (buf.available() == 0) {
+					Thread.yield();
 					continue;
 				}
 
 				// buf ok, send it
-				os.write(me.buf, 0, me.buflen);
+				int n = me.buf.get(bs);
+				os.write(bs, 0, n);
 
 				me.t = System.currentTimeMillis();
-				me.buflen = 0;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -132,13 +131,9 @@ public class StreamServer implements Callable<Void> {
 
 				synchronized (activeDownloaders) {
 					for (Downloader downloader : activeDownloaders.values()) {
-						if (downloader.buflen == 0) {
-							System.arraycopy(buf, 0, downloader.buf, 0, len);
-							downloader.buflen = len;
-							System.out.println("copied");
-						} else {
-							System.out.println("skiped");
-						}
+						int n = downloader.buf.put(buf, 0, len);
+						int missing = len - n;
+						System.out.println("missing " + missing);
 					}
 				}
 			}
@@ -159,7 +154,7 @@ public class StreamServer implements Callable<Void> {
 					Socket key = entry.getKey();
 					Downloader playerInfo = entry.getValue();
 					long last = playerInfo.t;
-					if (playerInfo.buflen != 0 && now - last > 20000) {
+					if (now - last > 20000 && playerInfo.buf.available() > 0) {
 						System.out.println(String.format("dead player: %s", key.getRemoteSocketAddress()));
 						iterator.remove();
 						try {

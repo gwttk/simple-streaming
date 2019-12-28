@@ -14,7 +14,7 @@ public class Launcher implements Callable<Void> {
 	public static final String VERSTR = "0.0.7";
 	public static final int LOCAL_PORT = 2233;
 	public static final int LOCAL_OVPN_PORT = 1194;
-	public static final int BUFLEN = 1024 * 16;
+	public static final int BUFLEN = 1024 * 64;
 
 	public static void main(String[] args) {
 		int exitCode = new CommandLine(new Launcher()).setCaseInsensitiveEnumValuesAllowed(true).execute(args);
