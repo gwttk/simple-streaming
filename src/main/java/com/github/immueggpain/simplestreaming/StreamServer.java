@@ -13,8 +13,9 @@ import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-@Command(description = "Start BMP server", name = "server", mixinStandardHelpOptions = true, version = Launcher.VERSTR)
-public class BMPUDPHub implements Callable<Void> {
+@Command(description = "Start streaming server", name = "server", mixinStandardHelpOptions = true,
+		version = Launcher.VERSTR)
+public class StreamServer implements Callable<Void> {
 
 	@Option(names = { "-p", "--port" }, required = true, description = "listening port")
 	public int serverPort;

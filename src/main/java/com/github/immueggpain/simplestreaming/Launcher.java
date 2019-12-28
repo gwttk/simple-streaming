@@ -7,7 +7,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.HelpCommand;
 
 @Command(description = "Streaming with OBS", name = "simple-streaming", mixinStandardHelpOptions = true,
-		version = Launcher.VERSTR, subcommands = { HelpCommand.class, BMPUDPHub.class, BMPPeer.class })
+		version = Launcher.VERSTR, subcommands = { HelpCommand.class, StreamServer.class, BMPPeer.class })
 public class Launcher implements Callable<Void> {
 
 	public static final String VERSTR = "0.0.1";
