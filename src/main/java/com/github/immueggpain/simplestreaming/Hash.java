@@ -1,4 +1,4 @@
-package com.github.immueggpain.bettermultiplayer;
+package com.github.immueggpain.simplestreaming;
 
 import java.io.InputStream;
 import java.nio.file.Files;

@@ -1,4 +1,4 @@
-package com.github.immueggpain.bettermultiplayer;
+package com.github.immueggpain.simplestreaming;
 
 import java.util.concurrent.Callable;
 
