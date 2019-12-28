@@ -55,9 +55,15 @@ public class Serve implements Callable<Void> {
 			long length = file.length();
 			file.seek(length);
 
-			long ct = copyLarge(file, os, buf);
+			try {
+				while (true) {
+					copyLarge(file, os, buf);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
-			System.out.println("close socket " + ct);
+			System.out.println("close socket");
 			file.close();
 			socket.close();
 		} catch (Exception e) {
