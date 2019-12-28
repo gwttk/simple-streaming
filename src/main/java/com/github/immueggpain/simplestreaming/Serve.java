@@ -1,12 +1,12 @@
 package com.github.immueggpain.simplestreaming;
 
-import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Callable;
 
-import org.apache.commons.io.FileUtils;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -37,6 +37,7 @@ public class Serve implements Callable<Void> {
 
 			while (true) {
 				Socket socket = serverSocket.accept();
+				System.out.println("new client");
 				Thread sendThread = Util.execAsync("send_thread", () -> send_thread(socket));
 				sendThread.join();
 			}
@@ -48,13 +49,31 @@ public class Serve implements Callable<Void> {
 	private void send_thread(Socket socket) {
 		try {
 			OutputStream os = socket.getOutputStream();
+			byte[] buf = new byte[1024 * 8];
 
-			long ct = FileUtils.copyFile(new File(filepath), os);
+			RandomAccessFile file = new RandomAccessFile(filepath, "r");
+			long length = file.length();
+			file.seek(length);
+
+			long ct = copyLarge(file, os, buf);
+
 			System.out.println("close socket " + ct);
+			file.close();
 			socket.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static long copyLarge(final RandomAccessFile input, final OutputStream output, final byte[] buffer)
+			throws IOException {
+		long count = 0;
+		int n;
+		while (-1 != (n = input.read(buffer))) {
+			output.write(buffer, 0, n);
+			count += n;
+		}
+		return count;
 	}
 
 }
