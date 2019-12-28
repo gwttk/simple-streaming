@@ -7,10 +7,11 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.HelpCommand;
 
 @Command(description = "Streaming with OBS", name = "simple-streaming", mixinStandardHelpOptions = true,
-		version = Launcher.VERSTR, subcommands = { HelpCommand.class, StreamServer.class, Serve.class })
+		version = Launcher.VERSTR,
+		subcommands = { HelpCommand.class, StreamUpload.class, StreamServer.class, Serve.class })
 public class Launcher implements Callable<Void> {
 
-	public static final String VERSTR = "0.0.5";
+	public static final String VERSTR = "0.0.6";
 	public static final int LOCAL_PORT = 2233;
 	public static final int LOCAL_OVPN_PORT = 1194;
 	public static final int BUFLEN = 1024 * 16;

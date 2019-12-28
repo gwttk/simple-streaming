@@ -4,7 +4,8 @@ import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-@Command(description = "Start uploader", name = "upload", mixinStandardHelpOptions = true, version = Launcher.VERSTR)
+@Command(description = "Start downloader", name = "download", mixinStandardHelpOptions = true,
+		version = Launcher.VERSTR)
 public class StreamDownloader implements Callable<Void> {
 
 	@Option(names = { "-p", "--port" }, required = true, description = "server's port")

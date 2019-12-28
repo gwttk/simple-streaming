@@ -54,11 +54,9 @@ public class StreamUpload implements Callable<Void> {
 
 	private static long copyLarge(final RandomAccessFile input, final OutputStream output, final byte[] buffer)
 			throws IOException {
-		long count = 0;
 		int n;
 		while (-1 != (n = input.read(buffer))) {
 			output.write(buffer, 0, n);
-			count += n;
 		}
 		return input.getFilePointer();
 	}
