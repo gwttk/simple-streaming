@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.github.immueggpain</groupId>
-	<artifactId>bettermultiplayer</artifactId>
-	<version>0.4.6</version>
+	<artifactId>simple-streaming</artifactId>
+	<version>0.0.1</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,7 +23,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>com.github.immueggpain.bettermultiplayer.Launcher</mainClass>
+							<mainClass>com.github.immueggpain.simplestreaming.Launcher</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
