@@ -54,9 +54,6 @@
 						</goals>
 						<configuration>
 							<target>
-								<copy todir="${project.build.directory}/ovpn">
-									<fileset dir="ovpn" />
-								</copy>
 								<zip
 									destfile="${project.build.directory}/${project.artifactId}-${project.version}.zip"
 									basedir="${project.build.directory}" includes="lib/**">
