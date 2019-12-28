@@ -48,9 +48,9 @@ public class Serve implements Callable<Void> {
 	private void send_thread(Socket socket) {
 		try {
 			OutputStream os = socket.getOutputStream();
-			byte[] buf = new byte[1024 * 64];
 
-			FileUtils.copyFile(new File(filepath), os);
+			long ct = FileUtils.copyFile(new File(filepath), os);
+			System.out.println("close socket " + ct);
 			socket.close();
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -10,7 +10,7 @@ import picocli.CommandLine.HelpCommand;
 		version = Launcher.VERSTR, subcommands = { HelpCommand.class, StreamServer.class, Serve.class })
 public class Launcher implements Callable<Void> {
 
-	public static final String VERSTR = "0.0.1";
+	public static final String VERSTR = "0.0.2";
 	public static final int LOCAL_PORT = 2233;
 	public static final int LOCAL_OVPN_PORT = 1194;
 
