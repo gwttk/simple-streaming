@@ -1,0 +1,22 @@
+language: java
+before_install:
+    - pyenv versions
+    - pyenv shell 3.7
+    - pip3 -V
+    - pip3 install --upgrade pip
+    - pip3 -V
+before_deploy:
+    # create some env vars
+    - PROJ_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+    - ARTIFACTID=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
+    # install PyGithub
+    - pip3 install PyGithub
+    # download githubrelease.py
+    - wget https://raw.githubusercontent.com/Immueggpain/citools/master/githubrelease.py
+    - pwd
+deploy:
+    provider: script
+    script: python3 githubrelease.py "target/$ARTIFACTID-$PROJ_VERSION.zip"
+    skip_cleanup: true
+    on:
+        tags: true
