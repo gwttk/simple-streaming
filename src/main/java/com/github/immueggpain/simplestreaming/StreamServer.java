@@ -68,7 +68,7 @@ public class StreamServer implements Callable<Void> {
 	private void download_thread(Socket socket) {
 		try (Socket socket_ = socket) {
 			OutputStream os = socket.getOutputStream();
-			CircularByteBuffer buf = new CircularByteBuffer(Launcher.BUFLEN);
+			CircularByteBuffer buf = new CircularByteBuffer(Launcher.BUFLEN * 4);
 			byte[] bs = new byte[Launcher.BUFLEN];
 
 			// add me to active downloaders
@@ -94,6 +94,10 @@ public class StreamServer implements Callable<Void> {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			synchronized (activeDownloaders) {
+				activeDownloaders.remove(socket);
+			}
 		}
 	}
 
@@ -133,7 +137,8 @@ public class StreamServer implements Callable<Void> {
 					for (Downloader downloader : activeDownloaders.values()) {
 						int n = downloader.buf.put(buf, 0, len);
 						int missing = len - n;
-						System.out.println("missing " + missing);
+						if (missing > 0)
+							System.out.println("missing " + missing);
 					}
 				}
 			}
@@ -147,7 +152,7 @@ public class StreamServer implements Callable<Void> {
 		while (true) {
 			synchronized (activeDownloaders) {
 				long now = System.currentTimeMillis();
-				System.out.println("==player check==" + now);
+				System.out.println("==downloader check==" + now);
 				for (Iterator<Entry<Socket, Downloader>> iterator = activeDownloaders.entrySet().iterator(); iterator
 						.hasNext();) {
 					Entry<Socket, Downloader> entry = iterator.next();
@@ -155,14 +160,14 @@ public class StreamServer implements Callable<Void> {
 					Downloader playerInfo = entry.getValue();
 					long last = playerInfo.t;
 					if (now - last > 20000 && playerInfo.buf.available() > 0) {
-						System.out.println(String.format("dead player: %s", key.getRemoteSocketAddress()));
+						System.out.println(String.format("dead downloader: %s", key.getRemoteSocketAddress()));
 						iterator.remove();
 						try {
 							key.close();
 						} catch (IOException e) {
 						}
 					} else {
-						System.out.println(String.format("active player: %s", key.getRemoteSocketAddress()));
+						System.out.println(String.format("active downloader: %s", key.getRemoteSocketAddress()));
 					}
 				}
 			}
