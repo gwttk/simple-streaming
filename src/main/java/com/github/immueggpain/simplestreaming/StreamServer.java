@@ -125,20 +125,23 @@ public class StreamServer implements Callable<Void> {
 			InputStream is = socket.getInputStream();
 			byte[] buf = new byte[Launcher.BUFLEN];
 
-			int len = is.read(buf);
-			if (len == -1)
-				return;
+			while (true) {
+				int len = is.read(buf);
+				if (len == -1)
+					return;
 
-			synchronized (activeDownloaders) {
-				for (Downloader downloader : activeDownloaders.values()) {
-					if (downloader.buflen == 0) {
-						System.arraycopy(buf, 0, downloader.buf, 0, len);
-						downloader.buflen = len;
+				synchronized (activeDownloaders) {
+					for (Downloader downloader : activeDownloaders.values()) {
+						if (downloader.buflen == 0) {
+							System.arraycopy(buf, 0, downloader.buf, 0, len);
+							downloader.buflen = len;
+							System.out.println("copied");
+						} else {
+							System.out.println("skiped");
+						}
 					}
 				}
 			}
-
-			socket.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

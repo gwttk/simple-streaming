@@ -57,6 +57,7 @@ public class StreamUpload implements Callable<Void> {
 		int n;
 		while (-1 != (n = input.read(buffer))) {
 			output.write(buffer, 0, n);
+			System.out.println("sent " + n);
 		}
 		return input.getFilePointer();
 	}
