@@ -4,8 +4,8 @@ import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-@Command(description = "Start BMP client", name = "client", mixinStandardHelpOptions = true, version = Launcher.VERSTR)
-public class BMPPeer implements Callable<Void> {
+@Command(description = "Start uploader", name = "upload", mixinStandardHelpOptions = true, version = Launcher.VERSTR)
+public class StreamDownloader implements Callable<Void> {
 
 	@Option(names = { "-p", "--port" }, required = true, description = "server's port")
 	public int serverPort;
