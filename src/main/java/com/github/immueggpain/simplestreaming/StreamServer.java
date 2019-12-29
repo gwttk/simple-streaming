@@ -30,6 +30,7 @@ public class StreamServer implements Callable<Void> {
 	}
 
 	private HashMap<Socket, Downloader> activeDownloaders = new HashMap<>();
+	private Socket currentSocket;
 
 	@Override
 	public Void call() throws Exception {
@@ -110,8 +111,9 @@ public class StreamServer implements Callable<Void> {
 			while (true) {
 				Socket socket = serverSocket.accept();
 				System.out.println("new uploader");
-				Thread uploadThread = Util.execAsync("upload_thread", () -> upload_thread(socket));
-				uploadThread.join();
+				Util.closeQuietly(currentSocket);
+				currentSocket = socket;
+				Util.execAsync("upload_thread", () -> upload_thread(socket));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

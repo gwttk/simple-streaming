@@ -1,5 +1,8 @@
 package com.github.immueggpain.simplestreaming;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.net.Socket;
 import java.security.GeneralSecurityException;
 import java.security.Key;
 
@@ -52,6 +55,16 @@ public final class Util {
 		decrypter.init(Cipher.DECRYPT_MODE, secretKey, gcmParameterSpec);
 		byte[] decryptedBytes = decrypter.doFinal(input, offset + 12, length - 12);
 		return decryptedBytes;
+	}
+
+	public static void closeQuietly(final Closeable sock) {
+		if (sock != null) {
+			try {
+				sock.close();
+			} catch (final IOException ioe) {
+				// ignored
+			}
+		}
 	}
 
 }
