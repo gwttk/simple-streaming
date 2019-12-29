@@ -69,7 +69,7 @@ public class StreamServer implements Callable<Void> {
 	private void download_thread(Socket socket) {
 		try (Socket socket_ = socket) {
 			OutputStream os = socket.getOutputStream();
-			CircularByteBuffer buf = new CircularByteBuffer(Launcher.BUFLEN * 4);
+			CircularByteBuffer buf = new CircularByteBuffer(Launcher.BUFLEN * 8);
 			byte[] bs = new byte[Launcher.BUFLEN];
 
 			// add me to active downloaders
