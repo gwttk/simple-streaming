@@ -6,7 +6,7 @@
 * Run server `java -jar simple-streaming-x.x.x.jar server -d <download_port> -u <upload_port>`
 * Enjoy!
 
-## QuickStart for Client(Streamer)
+## QuickStart for Client (Streamer)
 * Make sure you have **[Java](https://jdk.java.net/11/) 8+** installed
 * Use OBS to record (ts format) and save to <video_file>
 * [Download the zip file of latest release](https://github.com/Immueggpain/simple-streaming/releases). Unzip it
