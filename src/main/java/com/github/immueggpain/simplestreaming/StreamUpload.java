@@ -1,5 +1,6 @@
 package com.github.immueggpain.simplestreaming;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
@@ -20,13 +21,13 @@ public class StreamUpload implements Callable<Void> {
 
 	@Override
 	public Void call() throws Exception {
-		try {
-			Socket socket = new Socket(serverName, serverPort);
+		try (Socket socket = new Socket(serverName, serverPort)) {
 
 			OutputStream os = socket.getOutputStream();
 			byte[] buf = new byte[Launcher.BUFLEN];
 
-			RandomAccessFile file = new RandomAccessFile(filepath, "r");
+			RandomAccessFile file;
+			file = new RandomAccessFile(filepath, "r");
 			file.seek(file.length());
 
 			try {
@@ -43,9 +44,11 @@ public class StreamUpload implements Callable<Void> {
 				e.printStackTrace();
 			}
 
-			System.out.println("close socket");
 			file.close();
-			socket.close();
+
+		} catch (FileNotFoundException e) {
+			System.out.println("File not found, please start OBS and record first!");
+			return null;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
