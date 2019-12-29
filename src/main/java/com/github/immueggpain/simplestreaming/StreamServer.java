@@ -31,6 +31,7 @@ public class StreamServer implements Callable<Void> {
 
 	private HashMap<Socket, Downloader> activeDownloaders = new HashMap<>();
 	private Socket currentSocket;
+	private long uploaderBytes;
 
 	@Override
 	public Void call() throws Exception {
@@ -126,6 +127,7 @@ public class StreamServer implements Callable<Void> {
 	}
 
 	private void upload_thread(Socket socket) {
+		uploaderBytes = 0;
 		try (Socket socket_ = socket) {
 			InputStream is = socket.getInputStream();
 			byte[] buf = new byte[Launcher.BUFLEN];
@@ -134,6 +136,7 @@ public class StreamServer implements Callable<Void> {
 				int len = is.read(buf);
 				if (len == -1)
 					return;
+				uploaderBytes += len;
 
 				synchronized (activeDownloaders) {
 					for (Downloader downloader : activeDownloaders.values()) {
@@ -155,6 +158,7 @@ public class StreamServer implements Callable<Void> {
 			synchronized (activeDownloaders) {
 				long now = System.currentTimeMillis();
 				System.out.println("==downloader check==" + now);
+				System.out.println("bytes uploaded: " + uploaderBytes);
 				for (Iterator<Entry<Socket, Downloader>> iterator = activeDownloaders.entrySet().iterator(); iterator
 						.hasNext();) {
 					Entry<Socket, Downloader> entry = iterator.next();
