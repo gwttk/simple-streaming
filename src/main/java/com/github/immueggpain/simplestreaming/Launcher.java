@@ -11,10 +11,10 @@ import picocli.CommandLine.HelpCommand;
 		subcommands = { HelpCommand.class, StreamUpload.class, StreamServer.class, Serve.class })
 public class Launcher implements Callable<Void> {
 
-	public static final String VERSTR = "0.1.1";
+	public static final String VERSTR = "0.1.2";
 	public static final int LOCAL_PORT = 2233;
 	public static final int LOCAL_OVPN_PORT = 1194;
-	public static final int BUFLEN = 1024 * 256;
+	public static final int BUFLEN = 1024 * 512;
 
 	public static void main(String[] args) {
 		int exitCode = new CommandLine(new Launcher()).setCaseInsensitiveEnumValuesAllowed(true).execute(args);
