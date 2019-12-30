@@ -2,7 +2,6 @@ package com.github.immueggpain.simplestreaming;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.net.Socket;
 import java.security.GeneralSecurityException;
 import java.security.Key;
 
