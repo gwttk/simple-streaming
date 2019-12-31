@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 
+import org.apache.commons.io.FileUtils;
+
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -154,11 +156,18 @@ public class StreamServer implements Callable<Void> {
 
 	/** daemon cleaning expired players */
 	private void remove_expired_player_thread() {
+		long lastCheckTime = System.currentTimeMillis();
+		long lastCheckBytes = uploaderBytes;
 		while (true) {
 			synchronized (activeDownloaders) {
 				long now = System.currentTimeMillis();
 				System.out.println("==downloader check==" + now);
 				System.out.println("bytes uploaded: " + uploaderBytes);
+				double byterate = (double) (uploaderBytes - lastCheckBytes) / (now - lastCheckTime) * 1000;
+				String byteRate = FileUtils.byteCountToDisplaySize((long) byterate);
+				System.out.println("bytes rate: " + byteRate + "/s");
+				lastCheckTime = now;
+				lastCheckBytes = uploaderBytes;
 				for (Iterator<Entry<Socket, Downloader>> iterator = activeDownloaders.entrySet().iterator(); iterator
 						.hasNext();) {
 					Entry<Socket, Downloader> entry = iterator.next();
