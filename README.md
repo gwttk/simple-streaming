@@ -15,5 +15,5 @@
 
 ## QuickStart for Viewer
 * Use VLC player
-* Open url: tcp://<server>:<download_port>
+* Open url: `tcp://<server>:<download_port>`
 * Enjoy!
