@@ -8,7 +8,7 @@ import picocli.CommandLine.HelpCommand;
 
 @Command(description = "Streaming with OBS", name = "simple-streaming", mixinStandardHelpOptions = true,
 		version = Launcher.VERSTR,
-		subcommands = { HelpCommand.class, StreamUpload.class, StreamServer.class, Serve.class })
+		subcommands = { HelpCommand.class, StreamUpload.class, StreamServer.class, StreamServerNew.class, Serve.class })
 public class Launcher implements Callable<Void> {
 
 	public static final String VERSTR = "0.1.5";
