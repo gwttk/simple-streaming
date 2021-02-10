@@ -19,6 +19,8 @@ import picocli.CommandLine.Option;
 		version = Launcher.VERSTR)
 public class StreamServerNew implements Callable<Void> {
 
+	private static int BUFLEN = 1024 * 1024 * 2;
+
 	@Option(names = { "-u", "--upload-port" }, required = true, description = "upload listening port")
 	public int uploadPort;
 
@@ -71,9 +73,10 @@ public class StreamServerNew implements Callable<Void> {
 
 	private void download_thread(Socket socket) {
 		try (Socket socket_ = socket) {
+			socket.setTcpNoDelay(true);
 			OutputStream os = socket.getOutputStream();
-			CircularByteBuffer buf = new CircularByteBuffer(Launcher.BUFLEN * 4);
-			byte[] bs = new byte[Launcher.BUFLEN];
+			CircularByteBuffer buf = new CircularByteBuffer(BUFLEN * 2);
+			byte[] bs = new byte[BUFLEN];
 
 			// add me to active downloaders
 			Downloader me = new Downloader();
@@ -131,8 +134,9 @@ public class StreamServerNew implements Callable<Void> {
 	private void upload_thread(Socket socket) {
 		uploaderBytes = 0;
 		try (Socket socket_ = socket) {
+			socket.setTcpNoDelay(true);
 			InputStream is = socket.getInputStream();
-			byte[] buf = new byte[Launcher.BUFLEN];
+			byte[] buf = new byte[BUFLEN];
 
 			while (true) {
 				int len = is.read(buf);
@@ -161,11 +165,15 @@ public class StreamServerNew implements Callable<Void> {
 		while (true) {
 			synchronized (activeDownloaders) {
 				long now = System.currentTimeMillis();
-				System.out.println("==downloader check==" + now);
-				System.out.println("bytes uploaded: " + uploaderBytes);
+
+				// new stream, lastCheckBytes reset to 0
+				if (uploaderBytes < lastCheckBytes)
+					lastCheckBytes = 0;
+
 				double byterate = (double) (uploaderBytes - lastCheckBytes) / (now - lastCheckTime) * 1000;
 				String byteRate = FileUtils.byteCountToDisplaySize((long) byterate);
-				System.out.println("bytes rate: " + byteRate + "/s");
+				System.out.println(
+						String.format("time: %d, byte rate: %s/s, bytes uploaded: %d", now, byteRate, uploaderBytes));
 				lastCheckTime = now;
 				lastCheckBytes = uploaderBytes;
 				for (Iterator<Entry<Socket, Downloader>> iterator = activeDownloaders.entrySet().iterator(); iterator
