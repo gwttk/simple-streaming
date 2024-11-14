@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.com/Immueggpain/simple-streaming.svg?branch=master)](https://travis-ci.com/Immueggpain/simple-streaming)
-
 ## QuickStart for Server
 * Make sure you have **[Java](https://jdk.java.net/11/) 8+** installed
 * [Download the zip file of latest release](https://github.com/Immueggpain/simple-streaming/releases). Unzip it
